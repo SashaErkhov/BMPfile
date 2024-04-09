@@ -2,6 +2,8 @@
 #ifndef BMP_FILES_PVM
 #define BMP_FILES_PVM
 
+#include <iostream>
+
 class BMPfile
 {
 	unsigned char* bmpPtr;
