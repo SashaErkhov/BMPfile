@@ -1,5 +1,0 @@
-if(EXISTS "C:/Users/st117296/projects/PVM13.02.24/tests/build/tests[1]_tests.cmake")
-  include("C:/Users/st117296/projects/PVM13.02.24/tests/build/tests[1]_tests.cmake")
-else()
-  add_test(tests_NOT_BUILT tests_NOT_BUILT)
-endif()
