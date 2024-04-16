@@ -12,10 +12,10 @@ class BMPfile
 	
 	static const size_t HEADER_SIZE = 62;
 public:
-	BMPfile(unsigned int weight = 40, unsigned int height = 40);
+	BMPfile(unsigned int weight = 1000, unsigned int height = 1000);
 	BMPfile(const char* namefile);
 	~BMPfile();
-	void saveBmp(const char* nameFile);
+	void saveBmp(const char* nameFile="print.bmp");
 	void setPixel(unsigned int positionM, unsigned int positionN, bool size) const;
 	unsigned int getWidth()const;
 	unsigned int getHeight()const;

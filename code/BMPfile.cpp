@@ -57,7 +57,7 @@ BMPfile::BMPfile(const char* namefile)//еще не проверено
 	bmpPtr = new unsigned char[fileSize];
 	file.seekg(0, std::ios_base::beg);
 	file.read((char*)bmpPtr, fileSize);
-	// Закрыть файл, Карл!!!
+    file.close();
 }
 
 BMPfile::~BMPfile()
