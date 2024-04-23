@@ -6,7 +6,7 @@ int main()
 {
 	try
 	{
-		BMPfile first(8, 8);
+		BMPfile first(1000, 1000);
 		first.saveBmp("../Resource/Hi.bmp");
 	}
 	catch (const char* error)

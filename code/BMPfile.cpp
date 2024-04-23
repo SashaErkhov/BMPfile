@@ -3,6 +3,71 @@
 #include <stdexcept>
 #include "BMPfile.h"
 
+const unsigned char templateBMP[]={
+        0x42,
+        0x4d,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x3e,
+        0x0,
+        0x0,
+        0x0,
+        0x28,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x1,
+        0x0,
+        0x1,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0x0,
+        0xff,
+        0xff,
+        0xff,
+        0x0
+};
+
 BMPfile::BMPfile(unsigned int width, unsigned int height)
 {
 	if ( width == 0 )
@@ -11,21 +76,25 @@ BMPfile::BMPfile(unsigned int width, unsigned int height)
 		throw std::invalid_argument("Bad height");
 
 	bmpPtr = nullptr;
-	std::fstream hex;
+	/*std::fstream hex;
 	hex.open("../Resource/template.bmp", std::ios_base::in | std::ios_base::binary);//файл с шаблоном заголовка
 	if (!hex.is_open())
 		throw  std::runtime_error("Can't load template file");
-	
+	*/
 	long long int rowSize = ((width + 31) / 32) * 4;//формула из википедии, правильная
 	long long int bodySize = rowSize * height;
 	long long int fileSize = bodySize + 62;
 	bmpPtr = new unsigned char[fileSize];
 	
-	for (size_t i = 0; i < HEADER_SIZE; ++i){
+	/*for (size_t i = 0; i < HEADER_SIZE; ++i){
 		if ( hex.eof() ) throw std::runtime_error("Bad template file");
 		hex.get((char&)(bmpPtr[i]));
 	}
-	hex.close();
+	hex.close();*/
+    for(size_t i=0;i<HEADER_SIZE;++i)
+    {
+        bmpPtr[i]=templateBMP[i];
+    }
 
 	for (size_t i = HEADER_SIZE; i < fileSize; ++i)
 		bmpPtr[i] = 0b11111111;//белый
