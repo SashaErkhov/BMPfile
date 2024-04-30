@@ -6,8 +6,10 @@ int main()
 {
 	try
 	{
-		BMPfile first(1000, 1000);
+		BMPfile first(50, 50);
 		first.saveBmp("../Resource/Hi.bmp");
+        first.resize(100,100);
+        first.saveBmp("../Resource/Hi2.bmp");
 	}
 	catch (const char* error)
 	{

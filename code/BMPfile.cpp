@@ -100,11 +100,6 @@ BMPfile::BMPfile(unsigned int width, unsigned int height)
 		bmpPtr[i] = 0b11111111;//белый
 
 	//записываем параметры
-
-	const size_t FS_OFFSET = 2;
-	const size_t WIDTH_OFFSET = 18;
-	const size_t HEIGHT_OFFSET = 22;
-	const size_t BS_OFFSET = 34;
 	
 	*(reinterpret_cast<unsigned*>(bmpPtr + FS_OFFSET)) = fileSize;
 	m_width = reinterpret_cast<unsigned*>(bmpPtr + WIDTH_OFFSET); 	
@@ -112,7 +107,7 @@ BMPfile::BMPfile(unsigned int width, unsigned int height)
 	m_height = reinterpret_cast<unsigned*>(bmpPtr + HEIGHT_OFFSET);
  	*m_height = height;
 	*(reinterpret_cast<unsigned*>(bmpPtr + BS_OFFSET)) = bodySize;
-	
+	m_size=fileSize;
 }
 
 BMPfile::BMPfile(const char* namefile)//еще не проверено
@@ -127,6 +122,10 @@ BMPfile::BMPfile(const char* namefile)//еще не проверено
 	file.seekg(0, std::ios_base::beg);
 	file.read((char*)bmpPtr, fileSize);
     file.close();
+
+    m_width = reinterpret_cast<unsigned*>(bmpPtr + WIDTH_OFFSET);
+    m_height = reinterpret_cast<unsigned*>(bmpPtr + HEIGHT_OFFSET);
+    m_size=fileSize;
 }
 
 BMPfile::~BMPfile()
@@ -174,15 +173,84 @@ void BMPfile::setPixel(unsigned int row, unsigned int col, bool isWhite) const /
 	}
 }
 
-unsigned int BMPfile::getWidth()const//не готово
+unsigned int BMPfile::getWidth()const
 {
 	return *m_width;
 }
-unsigned int BMPfile::getHeight()const//не готово
+
+unsigned int BMPfile::getHeight()const
 {
 	return *m_height;
 }
-bool BMPfile::getPixel(unsigned int positionM, unsigned int positionN) const//не готово
+
+bool BMPfile::getPixel(unsigned int row, unsigned int col) const//не готово
 {
-	return 0;
+    if ( row >= *m_height )
+        throw std::invalid_argument("Bad row");
+    if ( col >= *m_width )
+        throw std::invalid_argument("Bad col");
+
+    const size_t BYTE_OFFSET = HEADER_SIZE + (((*m_width + 31) / 32) * 4 * (*m_height - row - 1))+ col/8;
+    const size_t BIT_OFFSET = 7 - col % 8;
+    char byte=bmpPtr[BYTE_OFFSET] & (1 << BIT_OFFSET);
+    if((byte>>BIT_OFFSET)==1)return true;
+    return false;
+}
+
+void BMPfile::resize(unsigned int newWeight, unsigned int newHeight)
+{
+    BMPfile newBMP(newWeight, newHeight);
+    for(size_t i=0;i<*m_height;++i)
+    {
+        for(size_t j=0;j<*m_width;++j)
+        {
+            newBMP.setPixel(i,j,getPixel(i,j));
+            //newBMP.setPixel(j,i,getPixel(j,i));
+        }
+    }
+    swap(*this,newBMP);
+}
+
+void BMPfile::swap(BMPfile& first, BMPfile& second)
+{
+    std::swap(first.m_height, second.m_height);
+    std::swap(first.m_width, second.m_width);
+    std::swap(first.m_size, second.m_size);
+    std::swap(first.bmpPtr, second.bmpPtr);
+}
+
+BMPfile::BMPfile(const BMPfile& other)
+{
+    m_size=other.m_size;
+    bmpPtr = new unsigned char[m_size];
+    for(size_t i=0;i<m_size;++i)
+    {
+        bmpPtr[i]=other.bmpPtr[i];
+    }
+    m_width = reinterpret_cast<unsigned*>(bmpPtr + WIDTH_OFFSET);
+    m_height = reinterpret_cast<unsigned*>(bmpPtr + HEIGHT_OFFSET);
+}
+
+BMPfile& BMPfile::operator=(const BMPfile& other)
+{
+    if(this!= &other)
+    {
+        BMPfile tmp(other);
+        swap(tmp, *this);
+    }
+    return *this;
+}
+
+BMPfile::BMPfile(BMPfile&& other): BMPfile()
+{
+    swap(other, *this);
+}
+
+BMPfile& BMPfile::operator=(BMPfile&& other)
+{
+    if(this!= &other)
+    {
+        swap(other, *this);
+    }
+    return *this;
 }
