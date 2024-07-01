@@ -3,23 +3,37 @@
 #define BMP_FILES_PVM
 
 #include <iostream>
+#include <cstdint>
 
 class BMPfile
 {
-	unsigned char* bmpPtr;
-	unsigned *m_height;
-	unsigned *m_width;
-	
-	static const size_t HEADER_SIZE = 62;
+	std::uint8_t * bmpPtr_;
+	std::uint32_t * height_;
+    std::uint32_t * width_;
+    std::uint32_t size_;
+
+	static const size_t HEADER_SIZE_ = 62;
+    static const size_t FS_OFFSET_ = 2;
+    static const size_t WIDTH_OFFSET_ = 18;
+    static const size_t HEIGHT_OFFSET_ = 22;
+    static const size_t BS_OFFSET_ = 34;
+    static void swap_(BMPfile& first, BMPfile& second);
+    BMPfile() noexcept: bmpPtr_(nullptr), height_(nullptr), width_(nullptr), size_(0) {}
 public:
-	BMPfile(unsigned int weight = 1000, unsigned int height = 1000);
+    BMPfile(const BMPfile&);
+    BMPfile& operator=(const BMPfile&);
+    BMPfile(BMPfile&&);
+    BMPfile& operator=(BMPfile&&);
+    ~BMPfile();
+
+    BMPfile(unsigned int weight, unsigned int height);
 	BMPfile(const char* namefile);
-	~BMPfile();
 	void saveBmp(const char* nameFile="print.bmp");
 	void setPixel(unsigned int positionM, unsigned int positionN, bool size) const;
-	unsigned int getWidth()const;
-	unsigned int getHeight()const;
-	bool getPixel(unsigned int positionM, unsigned int positionN) const;
+    void resize(unsigned int newWeight, unsigned int newHeight);
+	unsigned int getWidth()const { return *width_; }
+	unsigned int getHeight()const { return *height_; }
+	bool getPixel(unsigned int, unsigned int) const;//black - true white - false
 };
 
 #endif
