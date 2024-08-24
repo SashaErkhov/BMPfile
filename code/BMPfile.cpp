@@ -78,7 +78,7 @@ BMPfile::BMPfile(unsigned int width, unsigned int height)
 	bmpPtr_ = nullptr;
     std::uint32_t rowSize = ((width + 31) / 32) * 4;//формула из википедии, правильная
     std::uint32_t bodySize = rowSize * height;
-    std::uint32_t fileSize = bodySize + 62;
+    std::uint32_t fileSize = bodySize + HEADER_SIZE_;
 	bmpPtr_ = new std::uint8_t[fileSize];
     for(size_t i=0;i<HEADER_SIZE_;++i)
     {
@@ -87,7 +87,9 @@ BMPfile::BMPfile(unsigned int width, unsigned int height)
 
 	for (auto i = static_cast<std::uint32_t>(HEADER_SIZE_);
             i < fileSize; ++i)
-		bmpPtr_[i] = 0b11111111;//белый
+    {
+        bmpPtr_[i] = 0b11111111;//белый
+    }
 
 	//записываем параметры
 	
@@ -100,23 +102,26 @@ BMPfile::BMPfile(unsigned int width, unsigned int height)
 	size_=fileSize;
 }
 
-BMPfile::BMPfile(const char* namefile)//еще не проверено
+BMPfile::BMPfile(const char* namefile)
 {
 	std::fstream file;
 	file.open(namefile, std::ios_base::in | std::ios_base::binary);
-	file.seekg(2, std::ios_base::beg);
+    if (!file.is_open())
+    {
+        throw std::invalid_argument("Can't open file to read");
+    }
+	file.seekg(FS_OFFSET_, std::ios_base::beg);
 	std::uint8_t fileSizeChar[4];
 	file.read((char*)fileSizeChar, 4);
-    std::uint32_t fileSize =
+    size_ =
             (fileSizeChar[3] << 3 * 8) | (fileSizeChar[2] << 2 * 8) | (fileSizeChar[1] << 8) | (fileSizeChar[0]);
-	bmpPtr_ = new std::uint8_t[fileSize];
+	bmpPtr_ = new std::uint8_t[size_];
 	file.seekg(0, std::ios_base::beg);
-	file.read((char*)bmpPtr_, fileSize);
+	file.read((char*)bmpPtr_, size_);
     file.close();
 
     width_ = reinterpret_cast<std::uint32_t*>(bmpPtr_ + WIDTH_OFFSET_);
     height_ = reinterpret_cast<std::uint32_t*>(bmpPtr_ + HEIGHT_OFFSET_);
-    size_=fileSize;
 }
 
 BMPfile::~BMPfile()
@@ -129,10 +134,6 @@ BMPfile::~BMPfile()
 
 void BMPfile::saveBmp(const char* nameFile)
 {
-	if (bmpPtr_ == nullptr)
-	{
-		throw "error 4";
-	}
 	std::fstream file;
 	file.open(nameFile, std::ios_base::out | std::ios_base::binary);
 	if (!file.is_open())
@@ -145,11 +146,11 @@ void BMPfile::saveBmp(const char* nameFile)
 	file.close();
 }
 
-void BMPfile::setPixel(unsigned int row, unsigned int col, bool isWhite) const //проверено, не опасно
+void BMPfile::setPixel(unsigned int row, unsigned int col, bool isWhite) const
 {
-	if ( row >= *height_ )
+	if ( static_cast<std::uint32_t>(row) >= *height_ )
 		throw std::invalid_argument("Bad row");
-	if ( col >= *width_ )
+	if ( static_cast<std::uint32_t>(col) >= *width_ )
 		throw std::invalid_argument("Bad col");
 
 	const size_t BYTE_OFFSET = HEADER_SIZE_ + (((*width_ + 31) / 32) * 4 * (*height_ - row - 1))+ col/8;
@@ -164,28 +165,32 @@ void BMPfile::setPixel(unsigned int row, unsigned int col, bool isWhite) const /
 	}
 }
 
-bool BMPfile::getPixel(unsigned int row, unsigned int col) const//black - true white - false | не готово
+bool BMPfile::getPixel(unsigned int row, unsigned int col) const//black - false, white - true
 {
-    if ( row >= *height_ )
+    if ( static_cast<std::uint32_t>(row) >= *height_ )
         throw std::invalid_argument("Bad row");
-    if ( col >= *width_ )
+    if ( static_cast<std::uint32_t>(col) >= *width_ )
         throw std::invalid_argument("Bad col");
 
     const size_t BYTE_OFFSET = HEADER_SIZE_ + (((*width_ + 31) / 32) * 4 * (*height_ - row - 1))+ col/8;
     const size_t BIT_OFFSET = 7 - col % 8;
-    char byte=bmpPtr_[BYTE_OFFSET] & (1 << BIT_OFFSET);
+    unsigned char byte=bmpPtr_[BYTE_OFFSET] & (1 << BIT_OFFSET);
     if((byte>>BIT_OFFSET)==1)return true;
     return false;
 }
 
-void BMPfile::resize(unsigned int newWeight, unsigned int newHeight)
+void BMPfile::resize(unsigned int newWidth, unsigned int newHeight)
 {
-    BMPfile newBMP(newWeight, newHeight);
-    for(std::uint32_t i=0;i<*height_;++i)
+    if ( newWidth == 0 )
+        throw std::invalid_argument("Bad width");
+    if ( newHeight == 0 )
+        throw std::invalid_argument("Bad height");
+    BMPfile newBMP(newWidth, newHeight);
+    for(std::uint32_t i=0;i<(*newBMP.height_);++i)
     {
-        for(std::uint32_t j=0;j<*width_;++j)
+        for(std::uint32_t j=0;j<(*newBMP.width_);++j)
         {
-            newBMP.setPixel(i,j,getPixel(i,j));
+            newBMP.setPixel(i,j,this->getPixel(i,j));
             //newBMP.setPixel(j,i,getPixel(j,i));
         }
     }

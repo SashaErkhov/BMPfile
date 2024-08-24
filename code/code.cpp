@@ -6,19 +6,38 @@ int main()
 {
 	try
 	{
-		BMPfile first(50, 50);
-		first.saveBmp("../Resource/Hi.bmp");
-        BMPfile second("../Resource/Hi.bmp");
-        second.saveBmp("../Resource/Hi2.bmp");
-        first.resize(100,100);
-        first.saveBmp("../Resource/Hi3.bmp");
-	}
+        BMPfile first(4,4);
+        first.setPixel(0,0,false);
+        first.setPixel(0,2,false);
+        first.setPixel(1,1,false);
+        first.setPixel(1,3,false);
+        first.setPixel(2,0,false);
+        first.setPixel(2,2,false);
+        first.setPixel(3,1,false);
+        first.setPixel(3,3,false);
+        first.saveBmp("../Resource/Hi.bmp");
+        first.resize(4,2);
+        first.saveBmp("../Resource/Hi2.bmp");
+    }
 	catch (const char* error)
 	{
 		std::cout << error << std::endl;
 		system("pause");
 		return 1;
 	}
+    catch (const std::exception& error)
+    {
+        std::cout << error.what() << std::endl;
+        system("pause");
+        return 1;
+    }
+    catch (...)
+    {
+        std::cout << "Unknown error" << std::endl;
+        system("pause");
+        return 1;
+    }
+    //system("pause");
     return 0;
 }
 

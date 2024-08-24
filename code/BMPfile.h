@@ -17,6 +17,7 @@ class BMPfile
     static const size_t WIDTH_OFFSET_ = 18;
     static const size_t HEIGHT_OFFSET_ = 22;
     static const size_t BS_OFFSET_ = 34;
+
     static void swap_(BMPfile& first, BMPfile& second);
     BMPfile() noexcept: bmpPtr_(nullptr), height_(nullptr), width_(nullptr), size_(0) {}
 public:
@@ -30,7 +31,7 @@ public:
 	BMPfile(const char* namefile);
 	void saveBmp(const char* nameFile="print.bmp");
 	void setPixel(unsigned int positionM, unsigned int positionN, bool size) const;
-    void resize(unsigned int newWeight, unsigned int newHeight);
+    void resize(unsigned int newWidth, unsigned int newHeight);
 	unsigned int getWidth()const { return *width_; }
 	unsigned int getHeight()const { return *height_; }
 	bool getPixel(unsigned int, unsigned int) const;//black - true white - false
