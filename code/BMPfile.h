@@ -30,7 +30,7 @@ public:
     BMPfile(unsigned int weight, unsigned int height);
 	BMPfile(const char* namefile);
 	void saveBmp(const char* nameFile="print.bmp");
-	void setPixel(unsigned int positionM, unsigned int positionN, bool size) const;
+	void setPixel(unsigned int row, unsigned int col, bool isWhite) const;
     void resize(unsigned int newWidth, unsigned int newHeight);
 	unsigned int getWidth()const { return *width_; }
 	unsigned int getHeight()const { return *height_; }

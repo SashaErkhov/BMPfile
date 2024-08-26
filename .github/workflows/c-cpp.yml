@@ -1,0 +1,30 @@
+name: Containers
+
+on:
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '.github/workflows/*'
+  pull_request:
+    paths-ignore:
+      - '.github/workflows/*'
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Install gtest manually
+        run: sudo apt-get install libgtest-dev && cd /usr/src/gtest && sudo cmake CMakeLists.txt && sudo make && sudo cp lib/*.a /usr/lib && sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a && sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
+      - uses: actions/checkout@v3
+      - name: make
+        run: make
+      - name: test of BMPfile
+        run: ./BMPtests
+      - name: make clean
+        run: make clean
