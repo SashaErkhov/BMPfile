@@ -8,9 +8,9 @@ int main()
 	{
         std::cout << std::system("fc Hi.bmp test1.bmp")<<std::endl;
         BMPfile first("test1.bmp");
-        first.setPixel(0,0,true);
-        first.setPixel(1,1,true);
-        first.saveBmp("test1.bmp");
+        first.setPixel(0,0,false);
+        first.setPixel(1,1,false);
+        first.saveBmp("test2.bmp");
 
 
 //        BMPfile first(4,4);
