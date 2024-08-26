@@ -1,7 +1,7 @@
 CC=clang++
 CFLAGS=-pedantic-errors -gdwarf-4 -std=c++20
 LDFLAGS=-lgtest -lgtest_main -lpthread
-SOURCES=test1.cpp
+SOURCES=test1.cpp code/BMPfile.cpp
 
 all: BMPtests
 
