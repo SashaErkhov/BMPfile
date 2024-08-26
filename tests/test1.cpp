@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "BMPfile.h"
+#include "../code/BMPfile.h"
 
 TEST(BMPfileTest, ConstructorStandartdTest){
     BMPfile file(2,2);
