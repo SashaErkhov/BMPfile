@@ -6,8 +6,8 @@ SOURCES=test1.cpp code/BMPfile.cpp
 all: BMPtests
 
 
-BMPtests: tests/test1.cpp
-	$(CC) tests/test1.cpp $(CFLAGS) $(LDFLAGS) -o $@
+BMPtests: tests/test1.cpp code/BMPfile.cpp
+	$(CC) tests/test1.cpp code/BMPfile.cpp $(CFLAGS) $(LDFLAGS) -o $@
 
 clean:
 	rm -rf *.o BMPtests
