@@ -27,14 +27,14 @@ public:
     BMPfile& operator=(BMPfile&&);
     ~BMPfile();
 
-    BMPfile(unsigned int weight, unsigned int height);
+    BMPfile(unsigned int width, unsigned int height);
 	BMPfile(const char* namefile);
 	void saveBmp(const char* nameFile="print.bmp");
 	void setPixel(unsigned int row, unsigned int col, bool isWhite) const;
     void resize(unsigned int newWidth, unsigned int newHeight);
 	unsigned int getWidth()const { return *width_; }
 	unsigned int getHeight()const { return *height_; }
-	bool getPixel(unsigned int, unsigned int) const;//black - true white - false
+	bool getPixel(unsigned int, unsigned int) const;//black - false, white - true
 };
 
 #endif

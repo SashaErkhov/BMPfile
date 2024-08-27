@@ -186,12 +186,13 @@ void BMPfile::resize(unsigned int newWidth, unsigned int newHeight)
     if ( newHeight == 0 )
         throw std::invalid_argument("Bad height");
     BMPfile newBMP(newWidth, newHeight);
-    for(std::uint32_t i=0;i<(*newBMP.height_);++i)
+    std::uint32_t liminOfi=(*newBMP.height_ < *this->height_)? *newBMP.height_: *this->height_;
+    std::uint32_t liminOfj=(*newBMP.width_ < *this->width_)? *newBMP.width_: *this->width_;
+    for(std::uint32_t i=0;i< liminOfi;++i)
     {
-        for(std::uint32_t j=0;j<(*newBMP.width_);++j)
+        for(std::uint32_t j=0;j< liminOfj;++j)
         {
             newBMP.setPixel(i,j,this->getPixel(i,j));
-            //newBMP.setPixel(j,i,getPixel(j,i));
         }
     }
     swap_(*this,newBMP);
