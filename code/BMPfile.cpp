@@ -113,8 +113,7 @@ BMPfile::BMPfile(const char* namefile)
 	file.seekg(FS_OFFSET_, std::ios_base::beg);
 	std::uint8_t fileSizeChar[4];
 	file.read((char*)fileSizeChar, 4);
-    size_ =
-            (fileSizeChar[3] << 3 * 8) | (fileSizeChar[2] << 2 * 8) | (fileSizeChar[1] << 8) | (fileSizeChar[0]);
+    size_ = (fileSizeChar[3] << 3 * 8) | (fileSizeChar[2] << 2 * 8) | (fileSizeChar[1] << 8) | (fileSizeChar[0]);
 	bmpPtr_ = new std::uint8_t[size_];
 	file.seekg(0, std::ios_base::beg);
 	file.read((char*)bmpPtr_, size_);
@@ -137,9 +136,7 @@ void BMPfile::saveBmp(const char* nameFile)
 	std::fstream file;
 	file.open(nameFile, std::ios_base::out | std::ios_base::binary);
 	if (!file.is_open())
-	{
-		//delete[] bmpPtr_;
-		//bmpPtr_ = nullptr;
+    {
 		throw std::invalid_argument("Can't open file to write");
 	}
 	file.write((char*)bmpPtr_, size_);

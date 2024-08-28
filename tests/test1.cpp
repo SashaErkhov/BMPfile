@@ -134,3 +134,22 @@ TEST(BMPfileTest, Resize){
     EXPECT_TRUE(file.getPixel(1,0));
     EXPECT_FALSE(file.getPixel(1,1));
 }
+
+TEST(BMPfileTest, Thrtows){
+    EXPECT_ANY_THROW(BMPfile("hehe"));
+    EXPECT_ANY_THROW(BMPfile(0,0));
+    EXPECT_ANY_THROW(BMPfile(1,0));
+    EXPECT_ANY_THROW(BMPfile(0,1));
+    BMPfile file(2,2);
+    EXPECT_ANY_THROW(file.setPixel(2,2,false));
+    EXPECT_ANY_THROW(file.setPixel(2,2,true));
+    EXPECT_ANY_THROW(file.setPixel(20,2,false));
+    EXPECT_ANY_THROW(file.setPixel(2,20,true));
+    EXPECT_ANY_THROW(file.getPixel(2,2));
+    EXPECT_ANY_THROW(file.getPixel(2,2));
+    EXPECT_ANY_THROW(file.getPixel(20,2));
+    EXPECT_ANY_THROW(file.getPixel(2,20));
+    EXPECT_ANY_THROW(file.resize(0,0));
+    EXPECT_ANY_THROW(file.resize(1,0));
+    EXPECT_ANY_THROW(file.resize(0,1));
+}
