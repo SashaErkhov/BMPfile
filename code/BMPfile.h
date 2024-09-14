@@ -32,6 +32,7 @@ public:
 	void saveBmp(const char* nameFile="print.bmp");
 	void setPixel(unsigned int row, unsigned int col, bool isWhite) const;
     void resize(unsigned int newWidth, unsigned int newHeight);
+    void symResize(std::uint32_t newWidth, std::uint32_t newHeight);
 	unsigned int getWidth()const { return *width_; }
 	unsigned int getHeight()const { return *height_; }
 	bool getPixel(unsigned int, unsigned int) const;//black - false, white - true

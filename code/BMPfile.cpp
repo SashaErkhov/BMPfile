@@ -183,13 +183,48 @@ void BMPfile::resize(unsigned int newWidth, unsigned int newHeight)
     if ( newHeight == 0 )
         throw std::invalid_argument("Bad height");
     BMPfile newBMP(newWidth, newHeight);
-    std::uint32_t liminOfi=(*newBMP.height_ < *this->height_)? *newBMP.height_: *this->height_;
-    std::uint32_t liminOfj=(*newBMP.width_ < *this->width_)? *newBMP.width_: *this->width_;
+    std::uint32_t liminOfi=std::min(*newBMP.height_, *this->height_);
+    std::uint32_t liminOfj=std::min(*newBMP.width_, *this->width_);
     for(std::uint32_t i=0;i< liminOfi;++i)
     {
         for(std::uint32_t j=0;j< liminOfj;++j)
         {
             newBMP.setPixel(i,j,this->getPixel(i,j));
+        }
+    }
+    swap_(*this,newBMP);
+}
+
+void BMPfile::symResize(std::uint32_t newWidth, std::uint32_t newHeight){
+    if ( newWidth == 0 )
+        throw std::invalid_argument("Bad width");
+    if ( newHeight == 0 )
+        throw std::invalid_argument("Bad height");
+    BMPfile newBMP(newWidth, newHeight);
+    if ( (*newBMP.height_ > *this->height_) and
+    (*newBMP.width_ > *this->width_) ) {
+        for(std::uint32_t i=0;i<*this->height_;++i){
+            for(std::uint32_t j=0;j<*this->width_;++j){
+                newBMP.setPixel(
+                        i + (*newBMP.height_ - *this->height_) / 2,
+                        j + (*newBMP.width_ - *this->width_) / 2,
+                        this->getPixel(i,j)
+                        );
+            }
+        }
+    }
+    else {
+        long long int x;
+        long long int y;
+        for(std::uint32_t i=0;i<*this->height_;++i){
+            for(std::uint32_t j=0;j<*this->width_;++j){
+                x = i + ( static_cast<long long int>(*newBMP.height_) - static_cast<long long int>(*this->height_) ) / 2;
+                y = j + ( static_cast<long long int>(*newBMP.width_) - static_cast<long long int>(*this->width_) ) / 2;
+                if(x<0 or y<0 or x>=(*newBMP.height_) or y>=(*newBMP.width_) ) {
+                    continue;
+                }
+                newBMP.setPixel(x,y,this->getPixel(i,j));
+            }
         }
     }
     swap_(*this,newBMP);

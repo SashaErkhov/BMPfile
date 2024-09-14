@@ -153,3 +153,106 @@ TEST(BMPfileTest, Thrtows){
     EXPECT_ANY_THROW(file.resize(1,0));
     EXPECT_ANY_THROW(file.resize(0,1));
 }
+
+TEST(BMPfileTest, SymBmp_1){
+    BMPfile file(2,2);
+    file.setPixel(0,0, false);
+    file.setPixel(1,1, false);
+    file.symResize(4,4);
+    EXPECT_TRUE(file.getPixel(0,0));
+    EXPECT_TRUE(file.getPixel(0,1));
+    EXPECT_TRUE(file.getPixel(0,2));
+    EXPECT_TRUE(file.getPixel(0,3));
+    EXPECT_TRUE(file.getPixel(0,0));
+    EXPECT_TRUE(file.getPixel(1,0));
+    EXPECT_TRUE(file.getPixel(2,0));
+    EXPECT_TRUE(file.getPixel(3,0));
+    EXPECT_TRUE(file.getPixel(3,0));
+    EXPECT_TRUE(file.getPixel(3,1));
+    EXPECT_TRUE(file.getPixel(3,2));
+    EXPECT_TRUE(file.getPixel(3,3));
+    EXPECT_TRUE(file.getPixel(0,3));
+    EXPECT_TRUE(file.getPixel(1,3));
+    EXPECT_TRUE(file.getPixel(2,3));
+    EXPECT_TRUE(file.getPixel(3,3));
+    EXPECT_TRUE(file.getPixel(1,2));
+    EXPECT_TRUE(file.getPixel(2,1));
+    EXPECT_FALSE(file.getPixel(1,1));
+    EXPECT_FALSE(file.getPixel(2,2));
+}
+
+TEST(BMPfileTest, SymBmp_2){
+     BMPfile file{2,2};
+    file.setPixel(0,0,false);
+    file.setPixel(1,1,false);
+    file.symResize(3,3);
+    EXPECT_TRUE(file.getPixel(0,1));
+    EXPECT_TRUE(file.getPixel(0,2));
+    EXPECT_TRUE(file.getPixel(1,0));
+    EXPECT_TRUE(file.getPixel(1,2));
+    EXPECT_TRUE(file.getPixel(2,0));
+    EXPECT_TRUE(file.getPixel(2,1));
+    EXPECT_TRUE(file.getPixel(2,2));
+    EXPECT_FALSE(file.getPixel(0,0));
+    EXPECT_FALSE(file.getPixel(1,1));
+}
+
+TEST(BMPfileTest, SymBmp_3){
+    BMPfile file{2,2};
+    file.setPixel(0,0,false);
+    file.setPixel(1,1,false);
+    file.symResize(3,4);
+    EXPECT_TRUE(file.getPixel(0,0));
+    EXPECT_TRUE(file.getPixel(0,1));
+    EXPECT_TRUE(file.getPixel(0,2));
+    EXPECT_TRUE(file.getPixel(1,1));
+    EXPECT_TRUE(file.getPixel(1,2));
+    EXPECT_TRUE(file.getPixel(2,0));
+    EXPECT_TRUE(file.getPixel(2,2));
+    EXPECT_TRUE(file.getPixel(3,0));
+    EXPECT_TRUE(file.getPixel(3,1));
+    EXPECT_TRUE(file.getPixel(3,2));
+    EXPECT_FALSE(file.getPixel(1,0));
+    EXPECT_FALSE(file.getPixel(2,1));
+}
+
+TEST(BMPfileTest, SymBmp_4){
+    BMPfile file{2,2};
+    file.setPixel(0,0,false);
+    file.setPixel(1,1,false);
+    file.symResize(4,3);
+    EXPECT_TRUE(file.getPixel(0,0));
+    EXPECT_TRUE(file.getPixel(1,0));
+    EXPECT_TRUE(file.getPixel(2,0));
+    EXPECT_TRUE(file.getPixel(1,1));
+    EXPECT_TRUE(file.getPixel(2,1));
+    EXPECT_TRUE(file.getPixel(0,2));
+    EXPECT_TRUE(file.getPixel(2,2));
+    EXPECT_TRUE(file.getPixel(0,3));
+    EXPECT_TRUE(file.getPixel(1,3));
+    EXPECT_TRUE(file.getPixel(2,3));
+    EXPECT_FALSE(file.getPixel(0,1));
+    EXPECT_FALSE(file.getPixel(1,2));
+}
+
+TEST(BMPfileTest, SymBmp_5){
+    BMPfile file{4,4};
+    file.setPixel(1,1,false);
+    file.setPixel(2,2,false);
+    file.symResize(2,2);
+    EXPECT_TRUE(file.getPixel(0,1));
+    EXPECT_TRUE(file.getPixel(1,0));
+    EXPECT_FALSE(file.getPixel(0,0));
+    EXPECT_FALSE(file.getPixel(1,1));
+}
+
+TEST(BMPfileTest, SymBmp_6){
+    BMPfile file(2,4);
+    file.setPixel(1,0,false);
+    file.setPixel(2,1,false);
+    file.symResize(2,2);
+    EXPECT_FALSE(file.getPixel(0,0));
+    EXPECT_FALSE(file.getPixel(1,1));
+    EXPECT_TRUE(file.getPixel(0,1));
+    EXPECT_TRUE(file.getPixel(1,0));
+}
